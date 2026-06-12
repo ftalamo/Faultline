@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riskmap — Riesgo Operacional</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<link rel="stylesheet" href="riskmap.css">
+</head>
+<body>
+
+<div id="topbar">
+  <div class="logo">Riskmap <span>/ beta</span></div>
+  <div class="sep"></div>
+  <button class="mode-btn active" id="btn-edit"       onclick="setMode('edit')">Editar</button>
+  <button class="mode-btn"        id="btn-whatif"     onclick="setMode('whatif')">¿Qué pasa si…?</button>
+  <button class="mode-btn"        id="btn-montecarlo" onclick="setMode('montecarlo')">Monte Carlo</button>
+  <div class="topbar-right">
+    <span class="sim-label" id="sim-label"></span>
+    <button class="btn" onclick="saveGraph()">Exportar .json</button>
+    <button class="btn" onclick="loadExample()">Ejemplo</button>
+  </div>
+</div>
+
+<!-- LEFT -->
+<div id="left">
+  <div class="ptitle">Nodos</div>
+  <div id="node-list"></div>
+
+  <div class="psection">
+    <div class="ptitle" style="padding:0 0 4px">Agregar nodo</div>
+    <div class="row">
+      <input class="tinput" id="new-name" placeholder="Nombre…" />
+      <button class="btn pri" onclick="addNode()">+</button>
+    </div>
+  </div>
+
+  <div class="psection">
+    <div class="ptitle" style="padding:0 0 4px">Conectar</div>
+    <div class="row" style="flex-direction:column">
+      <select class="tsel" id="edge-from"><option value="">Desde…</option></select>
+      <select class="tsel" id="edge-to"  ><option value="">Hasta…</option></select>
+      <div class="row">
+        <button class="btn pri" style="flex:1" onclick="addEdge()">Agregar</button>
+        <button class="btn dng"               onclick="removeEdge()">Quitar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CANVAS -->
+<div id="canvas">
+  <div id="fail-banner">Modo "¿qué pasa si…?" — haz clic en un nodo para marcarlo como caído</div>
+  <div id="whatif-box">
+    <div class="ptitle" style="padding:0 0 8px">Impacto del fallo</div>
+    <div class="wrow"><span class="wlbl">Nodos afectados</span>  <span id="wi-aff"  style="font-family:var(--mono);color:var(--danger)">—</span></div>
+    <div class="wrow"><span class="wlbl">Nodos activos</span>    <span id="wi-act"  style="font-family:var(--mono);color:var(--ok)">—</span></div>
+    <div class="wrow"><span class="wlbl">Red comprometida</span> <span id="wi-pct"  style="font-family:var(--mono);color:var(--warn)">—</span></div>
+    <div class="wrow" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
+      <span class="wlbl">SPOFs detectados</span><span id="wi-spof" style="font-family:var(--mono);color:var(--warn)">0</span>
+    </div>
+  </div>
+  <div id="legend">
+    <div class="litem"><div class="ldot" style="background:#2ecc88"></div>Bajo riesgo</div>
+    <div class="litem"><div class="ldot" style="background:#f5a623"></div>Riesgo medio</div>
+    <div class="litem"><div class="ldot" style="background:#e8415a"></div>Alto riesgo / caído</div>
+    <div class="litem"><div class="ldot" style="background:#5b7fff;outline:2px solid #f5a623;outline-offset:1px;border-radius:50%"></div>SPOF</div>
+  </div>
+  <div id="canvas-btns">
+    <button class="btn" onclick="simulation.alpha(.3).restart()">Re-layout</button>
+    <button class="btn dng" onclick="resetFailed()">Resetear fallos</button>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div id="right">
+  <div class="ptitle" id="right-title">Inspector</div>
+  <div id="right-content"></div>
+</div>
+
+<script src="riskmap.js"></script>
+</body>
+</html>
